@@ -11,6 +11,7 @@ import java.util.*;
 
 
 public class ContactsListApp {
+    public static boolean exitApp = false;
     public static Scanner sc = new Scanner(System.in);
     public static String directory = "src";
     public static String file = "contacts.txt";
@@ -27,7 +28,6 @@ public class ContactsListApp {
     public static HashMap<String, String> contactMap = new HashMap<>();
 
     public static void contactsApp() throws IOException {
-        boolean exitApp = false;
         while (!exitApp) {
             System.out.println("1. View contacts.\n" +
                     "2. Add a new contact.\n" +
