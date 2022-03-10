@@ -2,6 +2,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.sql.SQLOutput;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 
@@ -11,6 +15,14 @@ public class ContactsListApp {
     public static String file = "contacts.txt";
     public static Path directoryPath = Paths.get(directory);
     public static Path filePath = Paths.get(directory, file);
+    public static  List<String> contactsList;
+    static  {
+        try {
+            contactsList = Files.readAllLines(filePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void main(String[] args) throws IOException {
         System.out.println("1. View contacts.\n" +
@@ -22,19 +34,41 @@ public class ContactsListApp {
         String userOption = sc.nextLine();
         switch (userOption) {
             case "1":
-                List<String> contactsList = Files.readAllLines(filePath);
                 for (String contact : contactsList) {
                     System.out.println(contact);
                 }
                 break;
             case "2":
-                // add contact
+                System.out.print("Enter Contact: ");
+                String nameInput = sc.nextLine();
+                System.out.print("Enter your Number: ");
+                String numberInput = sc.nextLine();
+                String newContact = nameInput + " | " + numberInput;
+                Files.write(
+                        filePath,
+                        Arrays.asList(newContact), StandardOpenOption.APPEND);
                 break;
             case "3":
                 // search contact by name
+                System.out.println("Search for the contact? ");
+                String nameSearch = sc.nextLine();
+                if (contactsList.contains(nameSearch)) {
+
+                }
                 break;
             case "4":
                 // delete contact
+                List<String> newList = new ArrayList<>();
+                System.out.println("Enter contact to delete: ");
+                String input = sc.nextLine();
+                for (String contact : contactsList) {
+                    if (contact.equals(input)) {
+                        newList.add("");
+                        continue;
+                    }
+                    newList.add(contact);
+                }
+                Files.write(filePath,newList);
                 break;
             case "5":
                 // exit app
