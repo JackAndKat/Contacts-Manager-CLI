@@ -65,11 +65,10 @@ public class ContactsListApp {
                     System.out.print("Search for contact by name:");
                     String nameSearch = sc.nextLine();
                     contactMap.forEach((name, number) -> {
-                        if (name.contains(nameSearch)) {
+                        if (name.toLowerCase(Locale.ROOT).contains(nameSearch)) {
                             System.out.printf("Name | Phone number %n ------------------%n %s %s.%n" ,name,number);
                         }
                     });
-                    System.out.println("");
                     contactsApp();
                     break;
                 case "4":
@@ -78,7 +77,7 @@ public class ContactsListApp {
                     System.out.println("Enter contact to delete: ");
                     String input = sc.nextLine();
                     for (String contact : contactsList) {
-                        if (contact.contains(input)) {
+                        if (contact.toLowerCase(Locale.ROOT).contains(input)) {
                             newList.add("");
                             updateMap();
                             continue;
@@ -110,7 +109,6 @@ public class ContactsListApp {
             }
         }
     }
-
     public static void main(String[] args) throws IOException {
         contactsApp();
     }
