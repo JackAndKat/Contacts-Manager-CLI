@@ -44,25 +44,24 @@ public class ContactsListApp {
                         String numberInput = sc.nextLine();
                         String frmtNum = formatNumber(numberInput);
                         if (frmtNum.equals("Invalid")){
-                            //try again
                             System.out.println("\nInvalid phone number, try again.");
                             tryAgain = true;
                         } else {
                             tryAgain = false;
                             String newContact = nameInput + " | " + frmtNum;
-//                            contactMap.forEach((name, number) -> {
-//                                if (name.equalsIgnoreCase(nameInput)) {
-//                                    System.out.printf("A contact named \"%s\" already exists. Overwrite it? [y/n] ", name);
-//                                    String overWrite = sc.nextLine();
-//                                    if (overWrite.equals("y")) {
-//                                        try {
-//                                            deleteContact(name);
-//                                        } catch (IOException e) {
-//                                            e.printStackTrace();
-//                                        }
-//                                    }
-//                                }
-//                            });
+                            contactMap.forEach((name, number) -> {
+                                if (name.equalsIgnoreCase(nameInput)) {
+                                    System.out.printf("A contact named \"%s\" already exists. Overwrite it? [y/n] ", name);
+                                    String overWrite = sc.nextLine();
+                                    if (overWrite.equals("y")) {
+                                        try {
+                                            deleteContact(name);
+                                        } catch (IOException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                }
+                            });
                             Files.write(
                                     filePath,
                                     List.of(newContact), StandardOpenOption.APPEND);
@@ -143,7 +142,6 @@ public class ContactsListApp {
     }
     public static void deleteContact(String deleteName) throws IOException {
         List<String> contactsList = Files.readAllLines(filePath);
-        updateMap();
         List<String> newList = new ArrayList<>();
         contactMap.forEach((name, number) -> {
             if (name.equalsIgnoreCase(deleteName)) {
