@@ -11,7 +11,7 @@ import java.util.*;
 
 
 public class ContactsListApp {
-    public static boolean exitApp = false;
+//    public static boolean exitApp = false;
     public static Scanner sc = new Scanner(System.in);
     public static String directory = "src";
     public static String file = "contacts.txt";
@@ -28,22 +28,26 @@ public class ContactsListApp {
     public static HashMap<String, String> contactMap = new HashMap<>();
 
     public static void contactsApp() throws IOException {
-        while (!exitApp) {
-            System.out.println("1. View contacts.\n" +
+//        while (!exitApp) {
+            System.out.print("1. View contacts.\n" +
                     "2. Add a new contact.\n" +
                     "3. Search a contact by name.\n" +
                     "4. Delete an existing contact.\n" +
                     "5. Exit.\n" +
-                    "Enter an option (1, 2, 3, 4 or 5):");
+                    "Enter an option (1, 2, 3, 4 or 5): ");
             String userOption = sc.nextLine();
             switch (userOption) {
                 case "1":
-                    updateMap();
-                    System.out.println("Name | Phone number\n" +
-                            "---------------");
-//                    contactMap.forEach((name, number) -> System.out.println(name + " | " + number));
+                     List<String> contactsList1 = Files.readAllLines(filePath);
+                    System.out.println("Name | Phone number\n ------------------");
+                    for (String contact : contactsList1) {
+                        System.out.println(contact);
+                    }
+                    System.out.println("---------------------");
+//                    updateMap();
                     contactsApp();
-                    break;
+//                    System.out.println("Name | Phone number\n ---------------");
+//                    contactMap.forEach((name, number) -> System.out.println(name + " | " + number));
                 case "2":
                     System.out.print("Enter Contact: ");
                     String nameInput = sc.nextLine();
@@ -58,13 +62,14 @@ public class ContactsListApp {
                 case "3":
                     // search contact by name
                     updateMap();
-                    System.out.println("Search for contact by name:");
+                    System.out.print("Search for contact by name:");
                     String nameSearch = sc.nextLine();
                     contactMap.forEach((name, number) -> {
                         if (name.contains(nameSearch)) {
-                            System.out.println(name + " | " + number);
+                            System.out.printf("Name | Phone number %n ------------------%n %s %s.%n" ,name,number);
                         }
                     });
+                    System.out.println("");
                     contactsApp();
                     break;
                 case "4":
@@ -73,8 +78,9 @@ public class ContactsListApp {
                     System.out.println("Enter contact to delete: ");
                     String input = sc.nextLine();
                     for (String contact : contactsList) {
-                        if (contact.equals(input)) {
+                        if (contact.contains(input)) {
                             newList.add("");
+                            updateMap();
                             continue;
                         }
                         newList.add(contact);
@@ -85,19 +91,18 @@ public class ContactsListApp {
                 case "5":
                     // exit app
                     System.out.println("Now exiting app.");
-                    exitApp = true;
+//                    exitApp = true;
                     break;
                 default:
                     System.out.println("Invalid input, try again.");
                     contactsApp();
             }
-        }
+//        }
     }
-
     public static void updateMap() {
         contactMap.clear();
         for (String contact : contactsList) {
-            String[] parts = contact.split("-", 2);
+            String[] parts = contact.split(" ", 2);
             if (parts.length >= 2) {
                 String contactName = parts[0];
                 String contactNumber = parts[1];
