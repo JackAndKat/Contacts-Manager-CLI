@@ -45,6 +45,7 @@ public class ContactsListApp {
                     contactsApp();
 //                    System.out.println("Name | Phone number\n ---------------");
 //                    contactMap.forEach((name, number) -> System.out.println(name + " | " + number));
+                    break;
                 case "2":
                     System.out.print("Enter Contact: ");
                     String nameInput = sc.nextLine();
