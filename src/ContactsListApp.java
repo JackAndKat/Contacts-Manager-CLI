@@ -44,6 +44,40 @@ public class ContactsListApp {
                             List.of(newContact), StandardOpenOption.APPEND);
                     System.out.println("\nContact added:\n" + newContact);
                     break;
+//                updateMap();
+//                List<String> newList1 = new ArrayList<>();
+//                System.out.print("\nEnter contact's name: ");
+//                String nameInput = sc.nextLine();
+//                System.out.print("Enter contact's number: ");
+//                String numberInput = sc.nextLine();
+//                String newContact = nameInput + " | " + numberInput;
+//                contactMap.forEach((name, number) -> {
+//                    for(String newName : contactsList) {
+//                        if (name.equals((nameInput))) {
+//                            System.out.printf("There's already a contact named %s. Do you want to overwrite it? (Yes/No)", nameInput);
+//                            String confirm = sc.nextLine();
+//                            if (confirm.equalsIgnoreCase("y")) {
+//                                newList1.add(nameInput);
+//                                continue;
+//                            }
+//                        }
+//                        newList1.add(newName);
+//                    }
+//                    try {
+//                        Files.write(filePath, newList1);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                });
+////                    String newContact = nameInput + " | " + numberInput;
+//                Files.write(
+//                        filePath,
+//                        List.of(newContact), StandardOpenOption.APPEND);
+//                System.out.println("\nContact added:\n" + newContact);
+//                break;
+
+
                 case "3":
                     // search contact by name
                     updateMap();
