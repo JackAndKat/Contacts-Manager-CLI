@@ -5,8 +5,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.sql.SQLOutput;
 import java.util.*;
-// Key:Value
-// Name:Number
+
 public class ContactsListApp {
     public static boolean exitApp = false;
     public static Scanner sc = new Scanner(System.in);
@@ -14,19 +13,11 @@ public class ContactsListApp {
     public static String file = "contacts.txt";
     public static Path directoryPath = Paths.get(directory);
     public static Path filePath = Paths.get(directory, file);
-    public static List<String> contactsList;
-    static  {
-        try {
-            contactsList = Files.readAllLines(filePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     public static HashMap<String, String> contactMap = new HashMap<>();
 
     public static void contactsApp() throws IOException {
-//        while (!exitApp) {
         do{
+            List<String> contactsList = Files.readAllLines(filePath);
             System.out.print("1. View contacts.\n" +
                     "2. Add a new contact.\n" +
                     "3. Search a contact by name.\n" +
@@ -36,16 +27,16 @@ public class ContactsListApp {
             String userOption = sc.nextLine();
             switch (userOption) {
                 case "1":
-                     List<String> contactsList1 = Files.readAllLines(filePath);
+                    // view contacts
+//                    List<String> contactsList1 = Files.readAllLines(filePath);
                     System.out.println("Name | Phone number\n ------------------");
-                    for (String contact : contactsList1) {
+                    for (String contact : contactsList) {
                         System.out.println(contact);
                     }
                     System.out.println("---------------------");
-//                    System.out.println("Name | Phone number\n ---------------");
-//                    contactMap.forEach((name, number) -> System.out.println(name + " | " + number));
                     break;
                 case "2":
+                    // add new contact
                     System.out.print("Enter Contact: ");
                     String nameInput = sc.nextLine();
                     System.out.print("Enter your Number: ");
@@ -53,30 +44,42 @@ public class ContactsListApp {
                     String newContact = nameInput + " | " + numberInput;
                     Files.write(
                             filePath,
-                            Arrays.asList(newContact), StandardOpenOption.APPEND);
+                            List.of(newContact), StandardOpenOption.APPEND);
                     break;
                 case "3":
                     // search contact by name
                     updateMap();
-                    System.out.print("Search for contact by name:");
+                    System.out.print("Search for contact by name: ");
                     String nameSearch = sc.nextLine();
                     contactMap.forEach((name, number) -> {
-                        if (name.toLowerCase(Locale.ROOT).contains(nameSearch)) {
+                        if(name.equalsIgnoreCase(nameSearch)){
                             System.out.printf("Name | Phone number %n ------------------%n %s %s%n" ,name,number);
                         }
                     });
                     break;
                 case "4":
                     // delete contact
+                    updateMap();
+                    System.out.println("contactMap = " + contactMap);
                     List<String> newList = new ArrayList<>();
                     System.out.println("Enter contact to delete: ");
                     String input = sc.nextLine();
-                    for (String contact : contactsList) {
-                        if (!contact.toLowerCase(Locale.ROOT).equals(input)) {
-                            newList.add(contact);
+                    contactMap.forEach((name, number) -> {
+                        if (name.equalsIgnoreCase(input)) {
+                            String deleteContact = name + " " + number;
+                            System.out.println("deleteContact = " + deleteContact);
+                            for (String contact : contactsList) {
+                                if (!contact.equals(deleteContact)) {
+                                    newList.add(contact);
+                                }
+                            }
+                            try {
+                                Files.write(filePath,newList);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                    Files.write(filePath,newList);
+                    });
                     break;
                 case "5":
                     // exit app
@@ -88,7 +91,8 @@ public class ContactsListApp {
             }
         }while(!exitApp);
     }
-    public static void updateMap() {
+    public static void updateMap() throws IOException {
+        List<String> contactsList = Files.readAllLines(filePath);
         contactMap.clear();
         for (String contact : contactsList) {
             String[] parts = contact.split(" ", 2);
