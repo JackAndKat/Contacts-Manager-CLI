@@ -29,7 +29,16 @@ public class ContactsListApp {
                     contactsList.sort(String.CASE_INSENSITIVE_ORDER);
                     System.out.println("\nName | Phone number\n------------------");
                     for (String contact : contactsList) {
-                        System.out.println(contact);
+                        String[] parts = contact.split(" ", 3);
+                        if (parts.length >= 3) {
+                            String contactName = parts[0];
+                            String divider = parts[1];
+                            String contactNumber = parts[2];
+//                            System.out.println(Arrays.toString(parts));
+//                            System.out.println((parts[1]));
+                            System.out.printf("%-5s%1s%-20s%n", contactName, divider ,contactNumber);
+
+                        }
                     }
                     System.out.println("------------------");
                     break;
