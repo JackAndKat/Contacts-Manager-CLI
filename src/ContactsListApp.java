@@ -26,6 +26,7 @@ public class ContactsListApp {
             switch (userOption) {
                 case "1":
                     // view contacts
+                    contactsList.sort(String.CASE_INSENSITIVE_ORDER);
                     System.out.println("\nName | Phone number\n------------------");
                     for (String contact : contactsList) {
                         System.out.println(contact);
@@ -34,50 +35,40 @@ public class ContactsListApp {
                     break;
                 case "2":
                     // add new contact
+                    updateMap();
                     System.out.print("\nEnter contact's name: ");
                     String nameInput = sc.nextLine();
-                    System.out.print("Enter contact's number: ");
-                    String numberInput = sc.nextLine();
-                    String newContact = nameInput + " | " + numberInput;
-                    Files.write(
-                            filePath,
-                            List.of(newContact), StandardOpenOption.APPEND);
-                    System.out.println("\nContact added:\n" + newContact);
+                    boolean tryAgain;
+                    do {
+                        System.out.print("Enter contact's number: ");
+                        String numberInput = sc.nextLine();
+                        String frmtNum = formatNumber(numberInput);
+                        if (frmtNum.equals("Invalid")){
+                            //try again
+                            System.out.println("\nInvalid phone number, try again.");
+                            tryAgain = true;
+                        } else {
+                            tryAgain = false;
+                            String newContact = nameInput + " | " + frmtNum;
+//                            contactMap.forEach((name, number) -> {
+//                                if (name.equalsIgnoreCase(nameInput)) {
+//                                    System.out.printf("A contact named \"%s\" already exists. Overwrite it? [y/n] ", name);
+//                                    String overWrite = sc.nextLine();
+//                                    if (overWrite.equals("y")) {
+//                                        try {
+//                                            deleteContact(name);
+//                                        } catch (IOException e) {
+//                                            e.printStackTrace();
+//                                        }
+//                                    }
+//                                }
+//                            });
+                            Files.write(
+                                    filePath,
+                                    List.of(newContact), StandardOpenOption.APPEND);
+                            System.out.println("\nContact added:\n" + newContact);
+                        }} while (tryAgain);
                     break;
-//                updateMap();
-//                List<String> newList1 = new ArrayList<>();
-//                System.out.print("\nEnter contact's name: ");
-//                String nameInput = sc.nextLine();
-//                System.out.print("Enter contact's number: ");
-//                String numberInput = sc.nextLine();
-//                String newContact = nameInput + " | " + numberInput;
-//                contactMap.forEach((name, number) -> {
-//                    for(String newName : contactsList) {
-//                        if (name.equals((nameInput))) {
-//                            System.out.printf("There's already a contact named %s. Do you want to overwrite it? (Yes/No)", nameInput);
-//                            String confirm = sc.nextLine();
-//                            if (confirm.equalsIgnoreCase("y")) {
-//                                newList1.add(nameInput);
-//                                continue;
-//                            }
-//                        }
-//                        newList1.add(newName);
-//                    }
-//                    try {
-//                        Files.write(filePath, newList1);
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                });
-////                    String newContact = nameInput + " | " + numberInput;
-//                Files.write(
-//                        filePath,
-//                        List.of(newContact), StandardOpenOption.APPEND);
-//                System.out.println("\nContact added:\n" + newContact);
-//                break;
-
-
                 case "3":
                     // search contact by name
                     updateMap();
@@ -85,32 +76,13 @@ public class ContactsListApp {
                     String nameSearch = sc.nextLine();
                     contactMap.forEach((name, number) -> {
                         if (name.equalsIgnoreCase(nameSearch)) {
-                            System.out.printf("\nName | Phone number \n------------------%s %s\n", name, number);
+                            System.out.printf("%nName | Phone number %n------------------%n%s %s%n", name, number);
                         }
                     });
                     break;
                 case "4":
                     // delete contact
-                    updateMap();
-                    List<String> newList = new ArrayList<>();
-                    System.out.print("\nEnter contact to delete: ");
-                    String input = sc.nextLine();
-                    contactMap.forEach((name, number) -> {
-                        if (name.equalsIgnoreCase(input)) {
-                            String deleteContact = name + " " + number;
-                            for (String contact : contactsList) {
-                                if (!contact.equals(deleteContact)) {
-                                    newList.add(contact);
-                                }
-                            }
-                            try {
-                                Files.write(filePath,newList);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                            System.out.println("\nContact deleted:\n" + deleteContact);
-                        }
-                    });
+                    deleteContact();
                     break;
                 case "5":
                     // exit app
@@ -133,6 +105,62 @@ public class ContactsListApp {
                 contactMap.put(contactName, contactNumber);
             }
         }
+    }
+    public static String formatNumber(String num) {
+        int len = num.length();
+        if (len == 7) {
+            return num.replaceFirst("(\\d{3})(\\d+)", "$1-$2");
+        } else if (len == 10) {
+            return num.replaceFirst("(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3");
+        } else if (len == 11) {
+            return num.replaceFirst("(\\d)(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3-$4");
+        } else {
+            return "Invalid";
+        }
+    }
+    public static void deleteContact() throws IOException {
+        List<String> contactsList = Files.readAllLines(filePath);
+        updateMap();
+        List<String> newList = new ArrayList<>();
+        System.out.print("\nEnter contact to delete: ");
+        String input = sc.nextLine();
+        contactMap.forEach((name, number) -> {
+            if (name.equalsIgnoreCase(input)) {
+                String deleteContact = name + " " + number;
+                for (String contact : contactsList) {
+                    if (!contact.equals(deleteContact)) {
+                        newList.add(contact);
+                    }
+                }
+                try {
+                    Files.write(filePath,newList);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("\nContact deleted:\n" + deleteContact);
+            }
+        });
+    }
+    public static void deleteContact(String deleteName) throws IOException {
+        List<String> contactsList = Files.readAllLines(filePath);
+        updateMap();
+        List<String> newList = new ArrayList<>();
+        contactMap.forEach((name, number) -> {
+            if (name.equalsIgnoreCase(deleteName)) {
+                String deleteContact = name + " " + number;
+                for (String contact : contactsList) {
+                    if (!contact.equals(deleteContact)) {
+                        newList.add(contact);
+                    }
+                }
+                try {
+                    Files.write(filePath,newList);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("\nDeleted old contact info:\n" + deleteContact);
+            }
+        });
     }
     public static void main(String[] args) throws IOException {
         contactsApp();
