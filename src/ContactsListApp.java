@@ -5,11 +5,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.sql.SQLOutput;
 import java.util.*;
-
 // Key:Value
 // Name:Number
-
-
 public class ContactsListApp {
 //    public static boolean exitApp = false;
     public static Scanner sc = new Scanner(System.in);
@@ -79,7 +76,6 @@ public class ContactsListApp {
                     for (String contact : contactsList) {
                         if (contact.toLowerCase(Locale.ROOT).contains(input)) {
                             newList.add("");
-                            updateMap();
                             continue;
                         }
                         newList.add(contact);
