@@ -8,7 +8,7 @@ import java.util.*;
 // Key:Value
 // Name:Number
 public class ContactsListApp {
-//    public static boolean exitApp = false;
+    public static boolean exitApp = false;
     public static Scanner sc = new Scanner(System.in);
     public static String directory = "src";
     public static String file = "contacts.txt";
@@ -26,6 +26,7 @@ public class ContactsListApp {
 
     public static void contactsApp() throws IOException {
 //        while (!exitApp) {
+        do{
             System.out.print("1. View contacts.\n" +
                     "2. Add a new contact.\n" +
                     "3. Search a contact by name.\n" +
@@ -41,8 +42,6 @@ public class ContactsListApp {
                         System.out.println(contact);
                     }
                     System.out.println("---------------------");
-//                    updateMap();
-                    contactsApp();
 //                    System.out.println("Name | Phone number\n ---------------");
 //                    contactMap.forEach((name, number) -> System.out.println(name + " | " + number));
                     break;
@@ -55,7 +54,6 @@ public class ContactsListApp {
                     Files.write(
                             filePath,
                             Arrays.asList(newContact), StandardOpenOption.APPEND);
-                    contactsApp();
                     break;
                 case "3":
                     // search contact by name
@@ -64,10 +62,9 @@ public class ContactsListApp {
                     String nameSearch = sc.nextLine();
                     contactMap.forEach((name, number) -> {
                         if (name.toLowerCase(Locale.ROOT).contains(nameSearch)) {
-                            System.out.printf("Name | Phone number %n ------------------%n %s %s.%n" ,name,number);
+                            System.out.printf("Name | Phone number %n ------------------%n %s %s%n" ,name,number);
                         }
                     });
-                    contactsApp();
                     break;
                 case "4":
                     // delete contact
@@ -75,25 +72,21 @@ public class ContactsListApp {
                     System.out.println("Enter contact to delete: ");
                     String input = sc.nextLine();
                     for (String contact : contactsList) {
-                        if (contact.toLowerCase(Locale.ROOT).contains(input)) {
-                            newList.add("");
-                            continue;
+                        if (!contact.toLowerCase(Locale.ROOT).equals(input)) {
+                            newList.add(contact);
                         }
-                        newList.add(contact);
                     }
                     Files.write(filePath,newList);
-                    contactsApp();
                     break;
                 case "5":
                     // exit app
                     System.out.println("Now exiting app.");
-//                    exitApp = true;
+                    exitApp = true;
                     break;
                 default:
                     System.out.println("Invalid input, try again.");
-                    contactsApp();
             }
-//        }
+        }while(!exitApp);
     }
     public static void updateMap() {
         contactMap.clear();
