@@ -18,10 +18,11 @@ public class ContactsListApp {
             List<String> contactsList = Files.readAllLines(filePath);
             System.out.print("\n1. View contacts.\n" +
                     "2. Add a new contact.\n" +
-                    "3. Search a contact by name.\n" +
-                    "4. Delete an existing contact.\n" +
-                    "5. Exit.\n" +
-                    "Enter an option (1, 2, 3, 4 or 5): ");
+                    "3. Edit a contact.\n" +
+                    "4. Search a contact by name.\n" +
+                    "5. Delete an existing contact.\n" +
+                    "6. Exit.\n" +
+                    "Enter an option (1, 2, 3, 4, 5 or 6): ");
             String userOption = sc.nextLine();
             switch (userOption) {
                 case "1":
@@ -41,7 +42,7 @@ public class ContactsListApp {
                     boolean tryAgain;
                     do {
                         System.out.print("Enter contact's number: ");
-                        String numberInput = sc.nextLine();
+                        int numberInput = Integer.parseInt(sc.nextLine());
                         String frmtNum = formatNumber(numberInput);
                         if (frmtNum.equals("Invalid")){
                             System.out.println("\nInvalid phone number, try again.");
@@ -69,6 +70,10 @@ public class ContactsListApp {
                         }} while (tryAgain);
                     break;
                 case "3":
+                    // edit contact
+                    editContact();
+                    break;
+                case "4":
                     // search contact by name
                     updateMap();
                     System.out.print("\nSearch for contact by name: ");
@@ -79,11 +84,11 @@ public class ContactsListApp {
                         }
                     });
                     break;
-                case "4":
+                case "5":
                     // delete contact
                     deleteContact();
                     break;
-                case "5":
+                case "6":
                     // exit app
                     System.out.println("\nNow exiting app.");
                     exitApp = true;
@@ -105,14 +110,15 @@ public class ContactsListApp {
             }
         }
     }
-    public static String formatNumber(String num) {
+    public static String formatNumber(int number) {
+        String num = Integer.toString(number);
         int len = num.length();
         if (len == 7) {
             return num.replaceFirst("(\\d{3})(\\d+)", "$1-$2");
         } else if (len == 10) {
             return num.replaceFirst("(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3");
-        } else if (len == 11) {
-            return num.replaceFirst("(\\d)(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3-$4");
+//        } else if (len == 11) {
+//            return num.replaceFirst("(\\d)(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3-$4");
         } else {
             return "Invalid";
         }
@@ -157,6 +163,110 @@ public class ContactsListApp {
                     e.printStackTrace();
                 }
                 System.out.println("\nDeleted old contact info:\n" + deleteContact);
+            }
+        });
+    }
+    public static void editContact() throws IOException {
+        updateMap();
+        System.out.print("\nSearch for contact to edit by name: ");
+        String nameSearch = sc.nextLine();
+        contactMap.forEach((name, number) -> {
+            if (name.equalsIgnoreCase(nameSearch)) {
+                System.out.printf("%nName | Phone number %n------------------%n%s %s%n", name, number);
+                System.out.println("\nWould you like to edit this contact? [y/n]");
+                String editContact = sc.nextLine();
+                if (editContact.equals("y")) {
+                    System.out.println("Edit name? [y/n]");
+                    String editName = sc.nextLine();
+                    if (editName.equals("y")) {
+                        System.out.println("Enter contact's new name:");
+                        String newName = sc.nextLine();
+                        System.out.println("Edit number? [y/n]");
+                        String editNumber = sc.nextLine();
+                        if (editNumber.equals("y")) {
+                            boolean tryAgain;
+                            do {
+                                System.out.print("Enter contact's new number: ");
+                                int numberInput = Integer.parseInt(sc.nextLine());
+                                String frmtNum = formatNumber(numberInput);
+                                if (frmtNum.equals("Invalid")){
+                                    System.out.println("\nInvalid phone number, try again.");
+                                    tryAgain = true;
+                                } else {
+                                    tryAgain = false;
+                                    String newContact = newName + " | " + frmtNum;
+                                    try {
+                                        deleteContact(name);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    try {
+                                        Files.write(
+                                                filePath,
+                                                List.of(newContact), StandardOpenOption.APPEND);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    System.out.println("\nUpdated contact info:\n" + newContact);
+                                }} while (tryAgain);
+                        } else {
+                            String newContact = newName + " " + number;
+                            try {
+                                deleteContact(name);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            try {
+                                Files.write(
+                                        filePath,
+                                        List.of(newContact), StandardOpenOption.APPEND);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println("\nUpdated contact info:\n" + newContact);
+                        }
+                    } else {
+                        System.out.println("Edit number? [y/n]");
+                        String editNumber = sc.nextLine();
+                        if (editNumber.equals("y")) {
+                            boolean tryAgain;
+                            do {
+                                System.out.print("Enter contact's new number: ");
+                                int numberInput = Integer.parseInt(sc.nextLine());
+                                String frmtNum = formatNumber(numberInput);
+                                if (frmtNum.equals("Invalid")){
+                                    System.out.println("\nInvalid phone number, try again.");
+                                    tryAgain = true;
+                                } else {
+                                    tryAgain = false;
+                                    String newContact = name + " | " + frmtNum;
+                                    try {
+                                        deleteContact(name);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    try {
+                                        Files.write(
+                                                filePath,
+                                                List.of(newContact), StandardOpenOption.APPEND);
+                                    } catch (IOException e) {
+                                        e.printStackTrace();
+                                    }
+                                    System.out.println("\nUpdated contact info:\n" + newContact);
+                                }} while (tryAgain);
+                        }
+                    }
+                } else {
+                    System.out.println("Edit another contact? [y/n]");
+                    String editAnother = sc.nextLine();
+                    if (editAnother.equals("y")) {
+                        try {
+                            editContact();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
             }
         });
     }
