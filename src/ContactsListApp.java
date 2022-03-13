@@ -35,8 +35,7 @@ public class ContactsListApp {
                             String contactName = parts[0];
                             String divider = parts[1];
                             String contactNumber = parts[2];
-                            System.out.printf("%-5s%1s%-14s|%n", contactName,divider,contactNumber.substring(0,3)+
-                                    "-"+contactNumber.substring(3,6)+"-"+contactNumber.substring(6));
+                            System.out.printf("%-5s%1s%-14s|%n", contactName,divider,contactNumber);
                         }
                     }
                     System.out.println("---------------------");
@@ -49,15 +48,14 @@ public class ContactsListApp {
                     boolean tryAgain;
                     do {
                         System.out.print("Enter contact's number: ");
-//                        int numberInput = Integer.parseInt(sc.nextLine());
                         String numberInput = sc.nextLine();
-//                        String frmtNum = formatNumber(numberInput);
-                        if (numberInput.equals("Invalid")){
+                        String frmtNum = formatNumber(numberInput);
+                        if (frmtNum.equals("Invalid")){
                             System.out.println("\nInvalid phone number, try again.");
                             tryAgain = true;
                         } else {
                             tryAgain = false;
-                            String newContact = nameInput + " | " + numberInput;
+                            String newContact = nameInput + " | " + frmtNum;
                             contactMap.forEach((name, number) -> {
                                 if (name.equalsIgnoreCase(nameInput)) {
                                     System.out.printf("A contact named \"%s\" already exists. Overwrite it? [y/n] ", name);
@@ -78,9 +76,7 @@ public class ContactsListApp {
                             String name= parts[0];
                             String divider = parts[1];
                             String number = parts[2];
-                            System.out.printf("%nContact added:%n%s %s %s%n" , name ,divider , number.substring(0,3)+
-                                    "-"+number.substring(3,6)+"-"+number.substring(6));
-//                            System.out.println("\nContact deleted:\n" + newContact);
+                            System.out.printf("%nContact added:%n%s %s %s%n", name, divider, number);
                         }} while (tryAgain);
                     break;
                 case "3":
@@ -94,8 +90,7 @@ public class ContactsListApp {
                     String nameSearch = sc.nextLine();
                     contactMap.forEach((name, number) -> {
                         if (name.equalsIgnoreCase(nameSearch)) {
-                            System.out.printf("%nName | Phone number %n------------------%n%s %s%n", name, number.substring(0,5)+
-                                    "-"+number.substring(5,8)+"-"+number.substring(8));
+                            System.out.printf("%nName | Phone number %n------------------%n%s %s%n", name, number);
                         }
                     });
                     break;
@@ -125,15 +120,14 @@ public class ContactsListApp {
             }
         }
     }
-    public static String formatNumber(int number) {
-        String num = Integer.toString(number);
+    public static String formatNumber(String num) {
         int len = num.length();
         if (len == 7) {
             return num.replaceFirst("(\\d{3})(\\d+)", "$1-$2");
         } else if (len == 10) {
             return num.replaceFirst("(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3");
-//        } else if (len == 11) {
-//            return num.replaceFirst("(\\d)(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3-$4");
+        } else if (len == 11) {
+            return num.replaceFirst("(\\d)(\\d{3})(\\d{3})(\\d+)", "$1-$2-$3-$4");
         } else {
             return "Invalid";
         }
@@ -157,9 +151,7 @@ public class ContactsListApp {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                System.out.printf("%nContact deleted:%n%s %s%n" , name , number.substring(0,5)+
-                        "-"+number.substring(5,8)+"-"+number.substring(8));
-//                System.out.println("\nContact deleted:\n" + deleteContact);
+                System.out.println("\nContact deleted:\n" + deleteContact);
             }
         });
     }
@@ -189,8 +181,7 @@ public class ContactsListApp {
         String nameSearch = sc.nextLine();
         contactMap.forEach((name, number) -> {
             if (name.equalsIgnoreCase(nameSearch)) {
-                System.out.printf("%nName | Phone number %n------------------%n%s %s%n", name, number.substring(0,5)+
-                        "-"+number.substring(5,8)+"-"+number.substring(8));
+                System.out.printf("%nName | Phone number %n------------------%n%s %s%n", name, number);
                 System.out.println("\nWould you like to edit this contact? [y/n]");
                 String editContact = sc.nextLine();
                 if (editContact.equals("y")) {
@@ -205,7 +196,7 @@ public class ContactsListApp {
                             boolean tryAgain;
                             do {
                                 System.out.print("Enter contact's new number: ");
-                                int numberInput = Integer.parseInt(sc.nextLine());
+                                String numberInput = sc.nextLine();
                                 String frmtNum = formatNumber(numberInput);
                                 if (frmtNum.equals("Invalid")){
                                     System.out.println("\nInvalid phone number, try again.");
@@ -250,7 +241,7 @@ public class ContactsListApp {
                             boolean tryAgain;
                             do {
                                 System.out.print("Enter contact's new number: ");
-                                int numberInput = Integer.parseInt(sc.nextLine());
+                                String numberInput = sc.nextLine();
                                 String frmtNum = formatNumber(numberInput);
                                 if (frmtNum.equals("Invalid")){
                                     System.out.println("\nInvalid phone number, try again.");
